@@ -9,5 +9,5 @@ name = "cr_trichome"
 crate-type = ["cdylib"]
 
 [dependencies]
-cellular_raza = { version = "0.0.12", features = ["pyo3", "timestamp"] }
+# cellular_raza = { version = "0.0.12", features = ["pyo3", "timestamp"] }
 pyo3 = "0.21.0"
