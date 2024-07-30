@@ -167,7 +167,7 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
         agents: cells,
         domain: domain,
         settings: settings,
-        aspects: [Mechanics, Interaction, Reactions, ReactionsContact],
+        aspects: [Reactions, ReactionsContact],
     )?;
     Ok(())
 }
