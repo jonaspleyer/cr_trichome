@@ -158,7 +158,7 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
         n_threads: settings.n_threads,
         show_progressbar: true,
         storage: StorageBuilder::new()
-            .location("out/semi_vertex")
+            .location("out/cr_trichome")
             .priority([StorageOption::SerdeJson]),
     };
 
