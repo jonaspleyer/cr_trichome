@@ -1,7 +1,7 @@
 use cellular_raza::building_blocks::{CartesianCuboid, CartesianSubDomain};
 use cellular_raza::concepts::*;
 
-use crate::MyCell;
+use crate::cell_properties::MyCell;
 
 #[derive(Clone, Domain)]
 pub struct MyDomain {
