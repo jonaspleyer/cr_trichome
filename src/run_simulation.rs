@@ -64,8 +64,13 @@ impl Default for SimulationSettings {
 
 #[pymethods]
 impl SimulationSettings {
-    fn __repr__(&self) -> String {
+    pub fn __repr__(&self) -> String {
         format!("{:#?}", self)
+    }
+
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
