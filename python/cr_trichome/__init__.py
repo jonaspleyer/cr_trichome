@@ -1,1 +1,1 @@
-print("Hello World")
+from .asdf import *
