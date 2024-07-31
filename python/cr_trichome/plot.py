@@ -10,10 +10,64 @@ import tqdm
 import multiprocessing as mp
 
 
-def get_last_output_path() -> Path:
-    return Path(sorted(list(glob("out/cr_trichome/*")))[-1])
+def get_last_output_path(search_path: Path = Path("out/cr_trichome")) -> Path:
+    """
+    We usually expect a file structure of the form::
+
+        out
+        └── cr_trichome
+            ├── 2024-07-31-T17-34-27
+            ├── 2024-07-31-T17-34-40
+            ├── 2024-07-31-T17-34-50
+            └── 2024-07-31-T17-34-57
+
+    This function will now obtain the most recent output path.
+
+        >>> get_last_output_path()
+        Path("out/cr_trichome/2024-07-31-T17-34-57")
+
+    Parameters
+    ----------
+    search_path : Path
+        The folder in which to search.
+
+    Returns
+    -------
+    path : Path
+        The last simulation path.
+
+    Raises
+    ------
+    ValueError:
+        If `search_path` does not contain any folders.
+    """
+    folders = sorted(list(glob(str(search_path / "*"))))
+    if len(folders) == 0:
+        raise ValueError("No folder found in directory {}".format(search_path))
+    else:
+        return Path(folders[-1])
 
 def get_all_iterations(output_path: Path | None = None) -> np.ndarray:
+    """
+    Obtain all iterations for the given path.
+    Will sort results in ascending order.
+
+    Parameters
+    ----------
+    output_path : Path
+        Folder of stored results. If not specified,
+        we obtain it via the ``get_last_output_path`` function.
+
+    Returns
+    -------
+    iterations : np.ndarray
+        Numpy array containing all iterations.
+
+    Raises
+    ------
+    ValueError:
+        See ``get_last_output_path``.
+    """
     if output_path is None:
         output_path = get_last_output_path()
     folders = glob(str(output_path / "cells/json/*"))
@@ -59,6 +113,33 @@ def plot_cells_at_iter(
         overwrite: bool = False,
         transparent: bool = False,
     ):
+    """
+    Plot all cells for a given iteration
+
+    Parameters
+    ----------
+    iteration : int
+        Iteration to store. Can be obtained via `get_all_iterations`.
+    intra_low : float
+        Lower boundary for colorscale of intracellular plotting.
+    intra_high : float
+        Upper boundary for colorscale of intracellular plotting.
+    output_path : Path | None = None
+        Path where simulation run is stored.
+        If not specified will be given with ``get_last_output_path``.
+    save_path : Path | None = None
+        Where to store the generated image.
+        By default, chooses ``Path(output_path / "images")``.
+    overwrite : bool
+        Overwrite a filename which is already present with identical name.
+    transparent : bool
+        Sets the background to transparent if True.
+
+    Raises
+    ------
+    ValueError:
+        See ``get_last_output_path``.
+    """
     if output_path is None:
         output_path = get_last_output_path()
     if save_path is None:
