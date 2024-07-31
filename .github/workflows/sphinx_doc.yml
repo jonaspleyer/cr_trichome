@@ -33,7 +33,7 @@ jobs:
       
       - name: install cellular_raza
         run: |
-          python3 -m pip install .
+          maturin develop -r
       # Up until here!
 
       - name: build cargo documentation in docs dir
