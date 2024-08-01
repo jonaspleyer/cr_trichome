@@ -9,8 +9,9 @@ cr_trichome documentation
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :titlesonly:
 
-    Documentation <documentation>
+    Documentation <documentation/index>
 
 Indices and tables
 ==================
