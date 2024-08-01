@@ -1,2 +1,5 @@
 from ._cr_trichome_rust import *
-from .plot import *
+from .plotting import *
+from .storage import *
+from .analysis import *
+from .simulation import *
