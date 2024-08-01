@@ -12,6 +12,7 @@ cr_trichome documentation
    :titlesonly:
 
     Documentation <documentation/index>
+    Theoretical Background <theoretical-background>
 
 Indices and tables
 ==================
