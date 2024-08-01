@@ -20,6 +20,7 @@ release = '0.0.1'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    'myst_parser',
     'sphinx.ext.napoleon',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
@@ -28,6 +29,12 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinxcontrib.bibtex',
 ]
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 
 autosummary_generate = True
 add_module_names = False
