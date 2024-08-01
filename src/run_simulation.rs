@@ -122,6 +122,14 @@ impl SimulationSettings {
     }
 }
 
+/// Parameters
+/// ----------
+/// settings : SimulationSettings
+///     All settings which need to be specified to run a full simulation.
+///
+/// Raises
+/// ------
+///     ValueError : When the simulation aborts due to an unexpected error.
 #[pyfunction]
 pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationError> {
     // Fix random seed
