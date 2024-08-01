@@ -13,6 +13,40 @@ use crate::custom_domain::*;
 
 use pyo3::prelude::*;
 
+/// This class contains all settings needed to run a full simulation with the `run_sim` function.
+///
+/// Attributes
+/// ----------
+/// cell_mechanics_area(float):
+///     Defines the total size of each cell. Currently all cells are assigned identical sizes.
+/// cell_mechanics_spring_tension(float):
+///     Spring constant of the edges of the cell.
+/// cell_mechanics_central_pressure(float):
+///     Internal pressure which pushes vertices outwards from the middle.
+/// cell_mechanics_interaction_range(float):
+///     Maximal interaction range until which other cells will be attracted via an outside
+///     potential.
+///     This value is also used to calculate the discretization of the total simulation domain.
+/// cell_mechanics_potential_strength(float):
+///     Interaction strength for repelling and attracting strength between the cells.
+/// cell_mechanics_damping_constant(float):
+///     Damping constant $\lambda$ for the physical mechanics of the cell.
+/// cell_mechanics_diffusion_constant(float):
+///     Amplitude of the Wiener process in the phyical mechanics of the cell.
+/// domain_size(float):
+///     Total size of the simulation quadratically-sized domain.
+/// n_times(int):
+///     Number of integration steps to take.
+/// dt(float):
+///     Temporal discretization used for solving all equations.
+/// t_start(float):
+///     Initial time point at which the simulation is started.
+/// save_interval(int):
+///     Every nth step will be saved to the output folder.
+/// n_threads(int):
+///     Number of threads to use for parallelization.
+/// seed(int):
+///     Initial seed of random number generator for the simulation.
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct SimulationSettings {
@@ -127,8 +161,7 @@ impl SimulationSettings {
 /// settings : SimulationSettings
 ///     All settings which need to be specified to run a full simulation.
 ///
-/// Raises
-/// ------
+/// Raises:
 ///     ValueError : When the simulation aborts due to an unexpected error.
 #[pyfunction]
 pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationError> {
