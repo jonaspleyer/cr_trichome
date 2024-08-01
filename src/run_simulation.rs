@@ -66,8 +66,59 @@ impl SimulationSettings {
     }
 
     #[new]
-    pub fn new() -> Self {
-        Self::default()
+    #[pyo3(signature = (
+        cell_mechanics_area=500.0,
+        cell_mechanics_spring_tension=2.0,
+        cell_mechanics_central_pressure=0.5,
+        cell_mechanics_interaction_range=5.0,
+        cell_mechanics_potential_strength=6.0,
+        cell_mechanics_damping_constant=0.2,
+        cell_mechanics_diffusion_constant=0.0,
+        domain_size=800.0,
+        n_times=20001,
+        dt=0.005,
+        t_start=0.0,
+        save_interval=50,
+        n_threads=1,
+        seed=2,
+    ))]
+    pub fn new(
+        cell_mechanics_area: f64,
+        cell_mechanics_spring_tension: f64,
+        cell_mechanics_central_pressure: f64,
+        cell_mechanics_interaction_range: f64,
+        cell_mechanics_potential_strength: f64,
+        cell_mechanics_damping_constant: f64,
+        cell_mechanics_diffusion_constant: f64,
+        domain_size: f64,
+        n_times: u64,
+        dt: f64,
+        t_start: f64,
+        save_interval: u64,
+        n_threads: usize,
+        seed: u64,
+    ) -> Self {
+        Self {
+            cell_mechanics_area,
+            cell_mechanics_spring_tension,
+            cell_mechanics_central_pressure,
+            cell_mechanics_interaction_range,
+            cell_mechanics_potential_strength,
+            cell_mechanics_damping_constant,
+            cell_mechanics_diffusion_constant,
+            domain_size,
+            n_times,
+            dt,
+            t_start,
+            save_interval,
+            n_threads: n_threads.try_into().unwrap(),
+            seed,
+        }
+    }
+
+    #[staticmethod]
+    pub fn default() -> Self {
+        <Self as Default>::default()
     }
 }
 
