@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-@dataclass
 class SimulationSettings:
     cell_mechanics_area: float
     cell_mechanics_spring_tension: float
@@ -16,12 +13,9 @@ class SimulationSettings:
     save_interval: int
     n_threads: int
     seed: int
-    asdf2: int
 
+    @staticmethod
     def default() -> SimulationSettings:
-        pass
-
-    def new() -> SimulationSettings:
         pass
 
 def run_sim(settings: SimulationSettings):
