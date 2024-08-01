@@ -44,6 +44,7 @@ jobs:
 
       - name: Install Doc Requirements
         run: |
+          source .venv/bin/activate
           python3 -m pip install -r docs/requirements.txt
 
       # - name: Install latex
@@ -53,6 +54,7 @@ jobs:
 
       - name: Sphinx build
         run: |
+          source .venv/bin/activate
           sphinx-build docs/source docs/build/html
 
       - name: Upload Artifacts
