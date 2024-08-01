@@ -49,7 +49,7 @@ bibtex_bibfiles = ['references.bib']
 html_theme_options = {
     "show_nav_level": 2,
     "logo": {
-        "image_dark": '_static/cellular_raza_dark_mode.svg',
-        "image_light": '_static/cellular_raza.svg'
+        "image_dark": '_static/cellular_raza_dark_mode.png',
+        "image_light": '_static/cellular_raza.png'
     },
 }
