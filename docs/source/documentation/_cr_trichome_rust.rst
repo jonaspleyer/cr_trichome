@@ -5,4 +5,4 @@ cr_trichome_rust
    :members:
    :inherited-members:
    :show-inheritance:
-
+   :undoc-members:
