@@ -17,20 +17,17 @@ use pyo3::prelude::*;
 #[derive(Clone, Debug)]
 pub struct SimulationSettings {
     pub cell_mechanics_area: f64,
-    pub cell_mechanics_string_tension: f64,
+    pub cell_mechanics_spring_tension: f64,
     pub cell_mechanics_central_pressure: f64,
     pub cell_mechanics_interaction_range: f64,
     pub cell_mechanics_potential_strength: f64,
     pub cell_mechanics_damping_constant: f64,
     pub cell_mechanics_diffusion_constant: f64,
-
     pub domain_size: f64,
-
     pub n_times: u64,
     pub dt: f64,
     pub t_start: f64,
     pub save_interval: u64,
-
     pub n_threads: NonZeroUsize,
     pub seed: u64,
 }
@@ -39,7 +36,7 @@ impl Default for SimulationSettings {
     fn default() -> Self {
         Self {
             cell_mechanics_area: 500.0,
-            cell_mechanics_string_tension: 2.0,
+            cell_mechanics_spring_tension: 2.0,
             cell_mechanics_central_pressure: 0.5,
             cell_mechanics_interaction_range: 5.0,
             cell_mechanics_potential_strength: 6.0,
@@ -91,7 +88,7 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
     // Define cell agents
     let models = VertexMechanics2D::fill_rectangle_flat_top(
         settings.cell_mechanics_area,
-        settings.cell_mechanics_string_tension,
+        settings.cell_mechanics_spring_tension,
         settings.cell_mechanics_central_pressure,
         settings.cell_mechanics_damping_constant,
         settings.cell_mechanics_diffusion_constant,

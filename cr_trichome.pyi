@@ -3,7 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class SimulationSettings:
     cell_mechanics_area: float
-    cell_mechanics_string_tension: float
+    cell_mechanics_spring_tension: float
     cell_mechanics_central_pressure: float
     cell_mechanics_interaction_range: float
     cell_mechanics_potential_strength: float
