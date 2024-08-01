@@ -45,3 +45,10 @@ html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 
 bibtex_bibfiles = ['references.bib']
+
+html_theme_options = {
+    "logo": {
+        "image_dark": '_static/cellular_raza_dark_mode.svg',
+        "image_light": '_static/cellular_raza.svg'
+    },
+}
