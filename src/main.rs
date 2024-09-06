@@ -1,4 +1,3 @@
-use backend::chili;
 use cellular_raza::prelude::*;
 
 use rand::{Rng, SeedableRng};
@@ -29,13 +28,11 @@ pub const N_THREADS: usize = 1;
 
 mod cell_properties;
 mod custom_domain;
-mod plotting;
 
 use cell_properties::*;
 use custom_domain::*;
-use time::FixedStepsize;
 
-fn main() -> Result<(), chili::SimulationError> {
+fn main() -> Result<(), SimulationError> {
     // Fix random seed
     let mut rng = ChaCha8Rng::seed_from_u64(2);
 
@@ -108,7 +105,7 @@ fn main() -> Result<(), chili::SimulationError> {
         .collect::<Vec<_>>();
 
     // Define settings for storage and time solving
-    let settings = chili::Settings {
+    let settings = Settings {
         time: FixedStepsize::from_partial_save_steps(0.0, DT, N_TIMES, SAVE_INTERVAL)?,
         n_threads: N_THREADS.try_into().unwrap(),
         show_progressbar: true,
@@ -118,7 +115,7 @@ fn main() -> Result<(), chili::SimulationError> {
     };
 
     // Run the simulation
-    let _storager = chili::run_simulation!(
+    let _storager = run_simulation!(
         agents: cells,
         domain: domain,
         settings: settings,

@@ -3,7 +3,7 @@ use cellular_raza::concepts::*;
 
 use serde::Serialize;
 
-use crate::MyCell;
+use crate::cell_properties::MyCell;
 
 #[derive(Clone, Domain)]
 pub struct MyDomain {
