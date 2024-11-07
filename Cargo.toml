@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 cellular_raza = { git="https://github.com/jonaspleyer/cellular_raza", features = ["pyo3", "timestamp"] }
 num = { version = "0.4.3", features = ["rand", "serde"] }
-pyo3 = "0.21.0"
+pyo3 = "0.22"
 rand = { version="0.8", features = ["small_rng"] }
 rand_chacha = { version="0.3.1", features=["serde1"] }
 serde = "1.0"
