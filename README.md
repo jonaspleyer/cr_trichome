@@ -14,10 +14,10 @@
     </picture>
 </div>
 
-Package to model trichome growth on the leaf of arabidopsis thaliana.
-
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jonaspleyer/cr_trichome/CI.yml?style=flat-square&label=Build)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jonaspleyer/cr_trichome/sphinx_doc.yml?style=flat-square&label=docs)
+
+Package to model trichome growth on the leaf of arabidopsis thaliana.
 
 # Documentation
 Visit the documentation at [jonaspleyer.github.io/cr_trichome/](https://jonaspleyer.github.io/cr_trichome/).
