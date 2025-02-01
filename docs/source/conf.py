@@ -56,7 +56,7 @@ bibtex_bibfiles = ['references.bib']
 html_theme_options = {
     "show_nav_level": 2,
     "logo": {
-        "image_dark": '_static/cellular_raza_dark_mode.png',
-        "image_light": '_static/cellular_raza.png'
+        "image_dark": "_static/cr_trichome_dark_mode.png",
+        "image_light": "_static/cr_trichome.png",
     },
 }
