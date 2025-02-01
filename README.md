@@ -1,4 +1,18 @@
-# cr_trichome
+<div align="center" style="width: min(100%, 600px);">
+    <picture>
+        <source
+            media="(prefers-color-scheme: dark)"
+            srcset="docs/source/_static/cr_trichome_dark_mode.svg"
+            width=100%
+        >
+        <source
+            media="(prefers-color-scheme: light)"
+            srcset="docs/source_static/cr_trichome.svg"
+            width=100%
+        >
+        <img alt="The cellular_raza logo" src="doc/cellular_raza.svg">
+    </picture>
+</div>
 
 Package to model trichome growth on the leaf of arabidopsis thaliana.
 
