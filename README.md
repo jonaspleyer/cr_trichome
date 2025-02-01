@@ -15,7 +15,8 @@
 </div>
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jonaspleyer/cr_trichome/CI.yml?style=flat-square&label=Build)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jonaspleyer/cr_trichome/sphinx_doc.yml?style=flat-square&label=docs)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jonaspleyer/cr_trichome/sphinx_doc.yml?style=flat-square&label=Docs)
+![PyPI - Version](https://img.shields.io/pypi/v/cr_trichome?style=flat-square&label=PyPi)
 
 Package to model trichome growth on the leaf of arabidopsis thaliana.
 
