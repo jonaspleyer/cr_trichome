@@ -6,6 +6,17 @@
 cr_trichome documentation
 =========================
 
+.. subfigure:: AB
+    :layout-sm: A|B
+    :gap: 8px
+    :subcaptions: below
+    :class-grid: outline
+
+    .. image:: _static/initial.png
+    .. image:: _static/final.png
+
+    Initial and final snapshots of a hexagonal grid of cells.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
