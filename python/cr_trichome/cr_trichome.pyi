@@ -15,9 +15,6 @@ class SimulationSettings:
     seed: int
 
     @staticmethod
-    def default() -> SimulationSettings:
-        pass
+    def __new__() -> SimulationSettings: ...
 
-def run_sim(settings: SimulationSettings):
-    pass
-
+def run_sim(settings: SimulationSettings): ...
