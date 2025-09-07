@@ -100,8 +100,6 @@ impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for OutsideInteractio
         let force = -dir * strength * spatial_cutoff;
         Ok((-force, force))
     }
-
-    fn get_interaction_information(&self) {}
 }
 
 impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for InsideInteraction {
@@ -121,7 +119,13 @@ impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for InsideInteraction
         let force = self.potential_strength * dir / (0.5 + 0.5 * r / self.average_radius);
         Ok((-force, force))
     }
+}
 
+impl InteractionInformation<()> for OutsideInteraction {
+    fn get_interaction_information(&self) {}
+}
+
+impl InteractionInformation<()> for InsideInteraction {
     fn get_interaction_information(&self) {}
 }
 
