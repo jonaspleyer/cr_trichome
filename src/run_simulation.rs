@@ -221,9 +221,9 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
                 },
             ),
             intracellular: nalgebra::vector![
-                rng.gen_range(0.9 * v0[0]..1.1 * v0[0]),
-                rng.gen_range(0.9 * v0[1]..1.1 * v0[1]),
-                rng.gen_range(0.9 * v0[2]..1.1 * v0[2]),
+                rng.random_range(0.9 * v0[0]..1.1 * v0[0]),
+                rng.random_range(0.9 * v0[1]..1.1 * v0[1]),
+                rng.random_range(0.9 * v0[2]..1.1 * v0[2]),
             ],
             k1,
             k2,
