@@ -101,7 +101,7 @@ impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for OutsideInteractio
         Ok((-force, force))
     }
 
-    fn get_interaction_information(&self) -> () {}
+    fn get_interaction_information(&self) {}
 }
 
 impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for InsideInteraction {
@@ -122,7 +122,7 @@ impl Interaction<Vector2<f64>, Vector2<f64>, Vector2<f64>> for InsideInteraction
         Ok((-force, force))
     }
 
-    fn get_interaction_information(&self) -> () {}
+    fn get_interaction_information(&self) {}
 }
 
 impl<const N: usize> Intracellular<nalgebra::Vector4<f64>> for MyCell<N> {
