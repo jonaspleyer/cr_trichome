@@ -11,6 +11,14 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+dependencies = [
+    "matplotlib>=3.9",
+    "numpy==2.2",
+    "pytest>=8.3",
+    "pandas>=2.2",
+    "tqdm>=4.66",
+    "maturin==1.7",
+]
 [tool.maturin]
 features = ["pyo3/extension-module"]
 module-name = "cr_trichome._cr_trichome_rust"
