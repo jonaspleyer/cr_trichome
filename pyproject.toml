@@ -13,6 +13,5 @@ classifiers = [
 dynamic = ["version"]
 [tool.maturin]
 features = ["pyo3/extension-module"]
-python-source = "python"
 module-name = "cr_trichome._cr_trichome_rust"
 include = ["docs/source/_static/cr_trichome*.svg"]
