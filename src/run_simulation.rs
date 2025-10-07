@@ -245,7 +245,7 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
             settings.save_interval,
         )?,
         n_threads: settings.n_threads,
-        show_progressbar: true,
+        progressbar: Some("".to_string()),
         storage: StorageBuilder::new()
             .location("out/cr_trichome")
             .priority([StorageOption::SerdeJson]),
