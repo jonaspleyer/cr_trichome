@@ -10,7 +10,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath("../../"))
-from python import cr_trichome
+import cr_trichome
 
 project = "cr_trichome"
 copyright = "2024, Jonas Pleyer, Toquinha Bergmann"
