@@ -81,7 +81,7 @@ impl Default for SimulationSettings {
             domain_size: 800.0,
 
             // Time parameters
-            n_times: 20_001,
+            n_times: 40_001,
             dt: 0.005,
             t_start: 0.0,
             save_interval: 50,
