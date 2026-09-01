@@ -7,27 +7,30 @@ import multiprocessing as mp
 
 from .storage import get_last_output_path, get_all_iterations, load_cells
 
+
 def plot_cells(ax, df_cells, intra_low, intra_high):
-    viridis = mpl.colormaps['viridis'].resampled(255)
-    thresh = intra_low + 0.5 * (intra_high - intra_low)
-    for pos, intracellular in zip(df_cells["cell.mechanics.points"], df_cells["cell.intracellular"]):
+    viridis = mpl.colormaps["viridis"].resampled(255)
+    thresh = 0.5 * (intra_high + intra_low)
+    for pos, intracellular in zip(
+        df_cells["cell.mechanics.points"], df_cells["cell.intracellular"]
+    ):
         if intracellular[2] < thresh:
             c = viridis(0)
         else:
             c = viridis((intracellular[2] - intra_low) / (intra_high - intra_low))
-        polygon = mpatches.Polygon(pos, facecolor=c, edgecolor='white')
+        polygon = mpatches.Polygon(pos, facecolor=c, edgecolor="white")
         ax.add_patch(polygon)
 
 
 def plot_cells_at_iter(
-        iteration: int,
-        intra_low: float,
-        intra_high: float,
-        output_path: Path | None = None,
-        save_path: Path | None = None,
-        overwrite: bool = False,
-        transparent: bool = False,
-    ):
+    iteration: int,
+    intra_low: float,
+    intra_high: float,
+    output_path: Path | None = None,
+    save_path: Path | None = None,
+    overwrite: bool = False,
+    transparent: bool = False,
+):
     """
     Plot all cells for a given iteration
 
@@ -82,24 +85,29 @@ def __plotting_helper(args_kwargs):
 
 
 def plot_cells_at_all_iterations(
-        intra_min: float,
-        intra_max: float,
-        output_path: Path | None = None,
-        save_path: Path | None = None,
-        overwrite: bool = False,
-        transparent: bool = True,
-    ) -> list:
+    intra_min: float,
+    intra_max: float,
+    output_path: Path | None = None,
+    save_path: Path | None = None,
+    overwrite: bool = False,
+    transparent: bool = True,
+) -> list:
     if output_path is None:
         output_path = get_last_output_path()
     iterations = get_all_iterations(output_path)
-    arguments = [(
-        (it, intra_min, intra_max),
-        {
-            "output_path": output_path,
-            "save_path": save_path,
-            "overwrite": overwrite,
-            "transparent": transparent,
-        }
-    ) for it in iterations]
+    arguments = [
+        (
+            (it, intra_min, intra_max),
+            {
+                "output_path": output_path,
+                "save_path": save_path,
+                "overwrite": overwrite,
+                "transparent": transparent,
+            },
+        )
+        for it in iterations
+    ]
     pool = mp.Pool()
-    return list(tqdm.tqdm(pool.imap(__plotting_helper, arguments), total=len(iterations)))
+    return list(
+        tqdm.tqdm(pool.imap(__plotting_helper, arguments), total=len(iterations))
+    )
