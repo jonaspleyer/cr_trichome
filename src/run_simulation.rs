@@ -47,7 +47,7 @@ use pyo3::prelude::*;
 ///     Number of threads to use for parallelization.
 /// seed(int):
 ///     Initial seed of random number generator for the simulation.
-#[pyclass]
+#[pyclass(get_all, set_all)]
 #[derive(Clone, Debug)]
 pub struct SimulationSettings {
     pub cell_mechanics_area: f64,
