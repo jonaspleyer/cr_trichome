@@ -4,6 +4,8 @@ from matplotlib.gridspec import GridSpec
 import numpy as np
 from tqdm import tqdm
 import string
+import os
+import argparse
 
 
 COLOR1 = "#6bd2db"
@@ -43,60 +45,55 @@ def derivative(y, dt):
     return (y[:-4] - 8 * y[1:-3] + 8 * y[3:-1] - y[4:]) / (12 * dt)
 
 
+def generate_movie(opath):
+    cmd = f"ffmpeg -y  -pattern_type glob -i '{opath / 'images/*.png'}' -c:v libx264 movie.mp4"
+    os.system(cmd)
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--movie", action="store_true", default=False)
+    parser.add_argument("--images", action="store_true", default=False)
+    pyargs = parser.parse_args()
+
     settings = crt.SimulationSettings.default()
 
-    # crt.run_sim(settings)
-    # crt.plot_cells_at_all_iterations(0.0, 4.0, overwrite=True, transparent=True)
+    settings.n_threads = 2
+    settings.n_times = 20_000
 
-    iterations = crt.get_all_iterations()[::20]  # TODO remove this thinning
+    settings.cell_growth_rate = 0.0
+
+    opath = crt.run_sim(settings)
+
+    iterations = crt.get_all_iterations(opath)
 
     set_mpl_rc_params()
-    fig = plt.figure(figsize=(24, 16))
-    gs = GridSpec(2, 1)
-    fig1 = fig.add_subfigure(gs[0])
-    fig2 = fig.add_subfigure(gs[1])
+    fig, axs = plt.subplots(1, 3, figsize=(24, 8))
 
     t = iterations * settings.dt
 
     concs = []
     for it in tqdm(iterations):
-        cells = crt.load_cells(it)
+        cells = crt.load_cells(it, opath)
         y = np.array([x for x in cells["cell.intracellular"]], dtype=float)
         concs.append(y)
 
     concs = np.array(concs)
-    dconcs = derivative(concs, settings.dt)
-    dconcs_mean = np.mean(dconcs, axis=1)
-    dconcs_std = np.std(dconcs, axis=1)
+    conc_max = 6.0
 
-    axs1 = fig1.subplots(1, 3)
-    axs2 = fig2.subplots(1, 3)
+    # Create Movie and Images
+    if pyargs.movie or pyargs.images:
+        crt.plot_cells_at_all_iterations(
+            0.0, conc_max, settings.domain_size, opath, overwrite=True, transparent=True
+        )
+    if pyargs.movie:
+        generate_movie(opath)
 
-    for ax in axs1:
+    for i, (ax, label) in enumerate(zip(axs, string.ascii_uppercase)):
         configure_ax(ax)
-
-    n_peaks = np.sum(concs[:, :, 2] > 2.0, axis=1)
-    axs1[0].plot(t, n_peaks, color=COLOR3, label="Number of Peaks")
-    axs1[0].legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.10))
-
-    # axs1[2].plot(t[2:-2], dconcs_mean[:, 0], color=COLOR1)
-    # axs1[2].plot(t[2:-2], dconcs_mean[:, 1], color=COLOR3)
-    axs1[2].plot(t[2:-2], dconcs_mean[:, 2], color=COLOR3, label="Avg. Derivative ??")
-    axs1[2].legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.10))
-
-    n_max = np.argmax(n_peaks)
-
-    iters = [iterations[0], iterations[n_max], iterations[-1]]
-    for it, ax, label in zip(iters, axs2, string.ascii_uppercase):
-        cells = crt.load_cells(it)
-        ax.set_xlim(50, 750)
-        ax.set_ylim(50, 750)
-        ax.set_axis_off()
-        crt.plot_cells(ax, cells, 0.0, 4.0)
         ax.text(
-            0.1,
-            0.9,
+            0.03,
+            1 - 0.03,
             label,
             fontsize=40,
             fontweight="semibold",
@@ -104,11 +101,38 @@ if __name__ == "__main__":
             va="top",
             horizontalalignment="left",
             transform=ax.transAxes,
-            color="white",
+            color="black" if i == 0 else "white",
         )
 
-    fig1.subplots_adjust(
-        left=0.03, right=0.97, bottom=0.07, top=0.93, wspace=0.20, hspace=0
+    n_peaks = np.sum(concs[:, :, 2] > conc_max / 2, axis=1)
+    np_ini = np.argmax(np.where(n_peaks < np.max(n_peaks) / 2))
+    np_mid = int(len(iterations) / 2)
+    np_fin = len(iterations) - 1
+
+    axs[0].plot(t, n_peaks, color=COLOR3, label="Number of [AC] Peaks")
+    axs[0].legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.10))
+
+    axs[0].scatter(
+        [t[np_ini], t[-1]],
+        [n_peaks[np_ini], n_peaks[-1]],
+        s=80,
+        color=COLOR5,
+        marker="o",
     )
-    fig2.subplots_adjust(left=0, right=1, bottom=0, top=1, wspace=0, hspace=0)
+
+    iters = [
+        (iterations[np_ini], f"Half Height t={t[np_ini]:.1f}"),
+        (iterations[-1], f"Final State t={t[-1]:.1f}"),
+    ]
+    for (it, label), ax in zip(iters, [axs[1], axs[2]]):
+        cells = crt.load_cells(it, opath)
+        ax.set_xlim(0.11 * settings.domain_size, 0.89 * settings.domain_size)
+        ax.set_ylim(0.11 * settings.domain_size, 0.89 * settings.domain_size)
+        ax.set_axis_off()
+        crt.plot_cells(ax, cells, 0.0, conc_max)
+        ax.set_title(label)
+
+    fig.subplots_adjust(
+        left=0.03, right=0.97, bottom=0.08, top=0.92, wspace=0.01, hspace=0
+    )
     fig.savefig("temp.pdf")
