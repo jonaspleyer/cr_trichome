@@ -48,7 +48,7 @@ use pyo3::prelude::*;
 /// seed(int):
 ///     Initial seed of random number generator for the simulation.
 #[pyclass(get_all, set_all)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize, approx::AbsDiffEq, PartialEq)]
 pub struct SimulationSettings {
     pub cell_mechanics_area: f64,
     pub cell_mechanics_spring_tension: f64,
@@ -57,12 +57,19 @@ pub struct SimulationSettings {
     pub cell_mechanics_potential_strength: f64,
     pub cell_mechanics_damping_constant: f64,
     pub cell_mechanics_diffusion_constant: f64,
+    pub cell_growth_rate: f64,
     pub domain_size: f64,
+    #[approx(equal)]
+    pub n_voxels: usize,
+    #[approx(equal)]
     pub n_times: u64,
     pub dt: f64,
     pub t_start: f64,
+    #[approx(equal)]
     pub save_interval: u64,
+    #[approx(equal)]
     pub n_threads: NonZeroUsize,
+    #[approx(equal)]
     pub seed: u64,
 }
 
@@ -76,9 +83,11 @@ impl Default for SimulationSettings {
             cell_mechanics_potential_strength: 6.0,
             cell_mechanics_damping_constant: 0.2,
             cell_mechanics_diffusion_constant: 0.0,
+            cell_growth_rate: 0.005,
 
             // Parameters for domain
             domain_size: 800.0,
+            n_voxels: 10,
 
             // Time parameters
             n_times: 40_001,
@@ -108,7 +117,9 @@ impl SimulationSettings {
         cell_mechanics_potential_strength=6.0,
         cell_mechanics_damping_constant=0.2,
         cell_mechanics_diffusion_constant=0.0,
+        cell_growth_rate=0.005,
         domain_size=800.0,
+        n_voxels=10,
         n_times=20001,
         dt=0.005,
         t_start=0.0,
@@ -124,7 +135,9 @@ impl SimulationSettings {
         cell_mechanics_potential_strength: f64,
         cell_mechanics_damping_constant: f64,
         cell_mechanics_diffusion_constant: f64,
+        cell_growth_rate: f64,
         domain_size: f64,
+        n_voxels: usize,
         n_times: u64,
         dt: f64,
         t_start: f64,
@@ -140,7 +153,9 @@ impl SimulationSettings {
             cell_mechanics_potential_strength,
             cell_mechanics_damping_constant,
             cell_mechanics_diffusion_constant,
+            cell_growth_rate,
             domain_size,
+            n_voxels,
             n_times,
             dt,
             t_start,
@@ -156,6 +171,27 @@ impl SimulationSettings {
     }
 }
 
+fn compare_sims(settings: &SimulationSettings, f: &std::path::Path) -> Option<std::path::PathBuf> {
+    let fpath = f.to_path_buf();
+    let mut spath = fpath.clone();
+    spath.push("settings.ron");
+    let settings_str = std::fs::read_to_string(&spath).ok()?;
+    let settings2: SimulationSettings = ron::from_str(&settings_str).ok()?;
+    if approx::abs_diff_eq!(settings, &settings2) {
+        return Some(fpath);
+    }
+    None
+}
+
+fn find_simulation(settings: &SimulationSettings) -> Option<std::path::PathBuf> {
+    for f in glob::glob("out/cr_trichome/*").ok()?.filter_map(|x| x.ok()) {
+        if let Some(opath) = compare_sims(settings, &f) {
+            return Some(opath);
+        }
+    }
+    None
+}
+
 /// Parameters
 /// ----------
 /// settings : SimulationSettings
@@ -164,16 +200,22 @@ impl SimulationSettings {
 /// Raises:
 ///     ValueError : When the simulation aborts due to an unexpected error.
 #[pyfunction]
-pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationError> {
+pub fn run_sim(settings: SimulationSettings) -> Result<std::path::PathBuf, SimulationError> {
+    if let Some(opath) = find_simulation(&settings) {
+        println!("Loading Simulation from {}", opath.display());
+        return Ok(opath);
+    }
+
     // Fix random seed
     let mut rng = ChaCha8Rng::seed_from_u64(settings.seed);
 
     // Define the simulation domain
     let domain = MyDomain {
-        cuboid: CartesianCuboid::from_boundaries_and_interaction_range(
+        cuboid: CartesianCuboid::from_boundaries_and_n_voxels(
             [0.0; 2],
             [settings.domain_size; 2],
-            2.0 * VertexMechanics2D::<6>::inner_radius_from_cell_area(settings.cell_mechanics_area),
+            [settings.n_voxels; 2],
+            // 2.0 * VertexMechanics2D::<6>::inner_radius_from_cell_area(settings.cell_mechanics_area),
         )?,
     };
 
@@ -205,7 +247,6 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
         (k1 * k4 + 1.0 - f) / (2.0 * k4),
     ];
     let mechanics_area_threshold = settings.cell_mechanics_area * 2.0;
-    let growth_rate = 0.01;
     let cells = models
         .into_iter()
         .map(|model| MyCell {
@@ -232,12 +273,12 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
             k5,
             contact_range,
             mechanics_area_threshold,
-            growth_rate,
+            growth_rate: settings.cell_growth_rate,
         })
         .collect::<Vec<_>>();
 
     // Define settings for storage and time solving
-    let settings = chili::Settings {
+    let chili_settings = chili::Settings {
         time: FixedStepsize::from_partial_save_steps(
             0.0,
             settings.dt,
@@ -252,11 +293,22 @@ pub fn run_sim(settings: SimulationSettings) -> Result<(), chili::SimulationErro
     };
 
     // Run the simulation
-    let _storager = chili::run_simulation!(
+    let storager = chili::run_simulation!(
         agents: cells,
         domain: domain,
-        settings: settings,
+        settings: chili_settings,
         aspects: [Reactions, ReactionsContact],
     )?;
-    Ok(())
+
+    // Store settings in output folder
+    let mut opath = storager.cells.extract_builder().get_full_path();
+    opath.pop();
+    let mut settings_path = opath.clone();
+    settings_path.push("settings.ron");
+    let ron_pretty_config = ron::ser::PrettyConfig::default();
+    let settings_str = ron::ser::to_string_pretty(&settings, ron_pretty_config)
+        .map_err(|e| chili::SimulationError::StorageError(e.into()))?;
+    std::fs::write(&settings_path, settings_str)?;
+
+    Ok(opath)
 }
