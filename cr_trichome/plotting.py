@@ -26,6 +26,7 @@ def plot_cells_at_iter(
     iteration: int,
     intra_low: float,
     intra_high: float,
+    domain_size: float,
     output_path: Path | None = None,
     save_path: Path | None = None,
     overwrite: bool = False,
@@ -69,8 +70,8 @@ def plot_cells_at_iter(
     cells = load_cells(iteration, output_path)
 
     fig, ax = plt.subplots(figsize=(12, 12))
-    ax.set_xlim(0, 800)
-    ax.set_ylim(0, 800)
+    ax.set_xlim(0, domain_size)
+    ax.set_ylim(0, domain_size)
     ax.set_axis_off()
     plot_cells(ax, cells, intra_low, intra_high)
     fig.tight_layout()
@@ -87,6 +88,7 @@ def __plotting_helper(args_kwargs):
 def plot_cells_at_all_iterations(
     intra_min: float,
     intra_max: float,
+    domain_size: float,
     output_path: Path | None = None,
     save_path: Path | None = None,
     overwrite: bool = False,
@@ -97,7 +99,7 @@ def plot_cells_at_all_iterations(
     iterations = get_all_iterations(output_path)
     arguments = [
         (
-            (it, intra_min, intra_max),
+            (it, intra_min, intra_max, domain_size),
             {
                 "output_path": output_path,
                 "save_path": save_path,
