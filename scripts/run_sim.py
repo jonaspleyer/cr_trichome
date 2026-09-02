@@ -109,8 +109,16 @@ if __name__ == "__main__":
     np_mid = int(len(iterations) / 2)
     np_fin = len(iterations) - 1
 
-    axs[0].plot(t, n_peaks, color=COLOR3, label="Number of [AC] Peaks")
-    axs[0].legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, 1.10))
+    for thresh, color in zip([0.45, 0.5, 0.55], [COLOR1, COLOR3, COLOR5]):
+        n_peaks_thresh = np.sum(concs[:, :, 2] > conc_max * thresh, axis=1)
+        axs[0].plot(
+            t,
+            n_peaks_thresh,
+            color=color,
+            label=f"Threshold={thresh:.2f}",
+        )
+    axs[0].set_title("Number of [AC] Peaks")
+    axs[0].legend(frameon=False)
 
     axs[0].scatter(
         [t[np_ini], t[-1]],
