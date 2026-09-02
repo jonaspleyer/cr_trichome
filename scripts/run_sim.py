@@ -60,6 +60,7 @@ if __name__ == "__main__":
 
     settings.n_threads = 2
     settings.n_times = 20_000
+    settings.save_interval = 200
 
     settings.cell_growth_rate = 0.0
 
@@ -101,7 +102,7 @@ if __name__ == "__main__":
             va="top",
             horizontalalignment="left",
             transform=ax.transAxes,
-            color="black" if i == 0 else "yellow",
+            color="black" if i == 0 else "#fafcc0",
         )
 
     n_peaks = np.sum(concs[:, :, 2] > conc_max / 2, axis=1)
