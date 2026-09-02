@@ -143,4 +143,4 @@ if __name__ == "__main__":
     fig.subplots_adjust(
         left=0.03, right=0.97, bottom=0.08, top=0.92, wspace=0.01, hspace=0
     )
-    fig.savefig("temp.pdf")
+    fig.savefig("cr_trichome.pdf")
