@@ -101,7 +101,7 @@ if __name__ == "__main__":
             va="top",
             horizontalalignment="left",
             transform=ax.transAxes,
-            color="black" if i == 0 else "white",
+            color="black" if i == 0 else "yellow",
         )
 
     n_peaks = np.sum(concs[:, :, 2] > conc_max / 2, axis=1)
