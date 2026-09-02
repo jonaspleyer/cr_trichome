@@ -10,10 +10,10 @@ name = "cr_trichome"
 crate-type = ["cdylib"]
 
 [dependencies]
-cellular_raza = { version="0.4.0", features = ["pyo3", "timestamp"] }
+cellular_raza = { path="../cellular_raza/cellular_raza/", features = ["pyo3", "timestamp"] }
 num = { version = "0.4.3", features = ["rand", "serde"] }
-pyo3 = "0.26"
-rand = { version="0.9", features = ["small_rng"] }
+pyo3 = "0.29"
+rand = { version="0.9" }
 rand_chacha = { version="0.9", features=["serde"] }
 serde = "1.0"
 tempdir = "0.3"
