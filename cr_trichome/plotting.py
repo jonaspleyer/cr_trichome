@@ -18,7 +18,7 @@ def plot_cells(ax, df_cells, intra_low, intra_high):
             c = viridis(0)
         else:
             c = viridis((intracellular[2] - intra_low) / (intra_high - intra_low))
-        polygon = mpatches.Polygon(pos, facecolor=c, edgecolor="white")
+        polygon = mpatches.Polygon(pos, facecolor=c, edgecolor="#707070")
         ax.add_patch(polygon)
 
 
