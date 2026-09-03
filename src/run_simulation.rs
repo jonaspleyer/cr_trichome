@@ -240,7 +240,7 @@ pub fn run_sim(settings: SimulationSettings) -> Result<std::path::PathBuf, Simul
     let k5 = 1.0;
     // let contact_range = (CELL_MECHANICS_AREA / std::f64::consts::PI).sqrt() * 1.5;
     let contact_range = 0.9 * settings.domain_size / (models.len() as f64).sqrt() * 1.5;
-    let f = -((k1 * k4 - 1f64).powf(2.0) - 4.0 * k2 * k4 * k5).sqrt();
+    let f = ((k1 * k4 - 1f64).powf(2.0) - 4.0 * k2 * k4 * k5).sqrt();
     let v0 = nalgebra::vector![
         (k1 * k4 - 1.0 + f) / (2.0 * k2 * k4),
         (k1 * (k1 * k4 - 1.0 - f) - 2.0 * k2 * k5) / (2.0 * k5),

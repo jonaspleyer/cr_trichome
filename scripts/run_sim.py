@@ -80,7 +80,8 @@ if __name__ == "__main__":
         concs.append(y)
 
     concs = np.array(concs)
-    conc_max = 6.0
+    concs[:, :, 2] += concs[:, :, 0]
+    conc_max = np.max(concs[:, :, ::2])
 
     # Create Movie and Images
     if pyargs.movie or pyargs.images:
@@ -102,28 +103,30 @@ if __name__ == "__main__":
             va="top",
             horizontalalignment="left",
             transform=ax.transAxes,
-            color="black" if i == 0 else "#fafcc0",
+            color="black" if i == 0 else "white",
         )
 
-    n_peaks = np.sum(concs[:, :, 2] > conc_max / 2, axis=1)
-    np_ini = np.argmax(np.where(n_peaks < np.max(n_peaks) / 2))
+    trichome_density = np.sum(concs[:, :, 2] > conc_max / 2, axis=1)
+    trichome_density = trichome_density / float(concs.shape[1])
+    np_ini = np.argmax(np.where(trichome_density < np.max(trichome_density) / 2))
     np_mid = int(len(iterations) / 2)
     np_fin = len(iterations) - 1
 
     for thresh, color in zip([0.45, 0.5, 0.55], [COLOR1, COLOR3, COLOR5]):
-        n_peaks_thresh = np.sum(concs[:, :, 2] > conc_max * thresh, axis=1)
+        trichome_density_thresh = np.sum(concs[:, :, 2] > conc_max * thresh, axis=1)
+        trichome_density_thresh = trichome_density_thresh / float(concs.shape[1])
         axs[0].plot(
             t,
-            n_peaks_thresh,
+            trichome_density_thresh,
             color=color,
             label=f"Threshold={thresh:.2f}",
         )
-    axs[0].set_title("Number of [AC] Peaks")
+    axs[0].set_title("Trichome Density")
     axs[0].legend(frameon=False)
 
     axs[0].scatter(
         [t[np_ini], t[-1]],
-        [n_peaks[np_ini], n_peaks[-1]],
+        [trichome_density[np_ini], trichome_density[-1]],
         s=80,
         color=COLOR5,
         marker="o",
@@ -142,6 +145,6 @@ if __name__ == "__main__":
         ax.set_title(label)
 
     fig.subplots_adjust(
-        left=0.03, right=0.97, bottom=0.08, top=0.92, wspace=0.01, hspace=0
+        left=0.05, right=1, bottom=0.08, top=0.92, wspace=0.01, hspace=0
     )
     fig.savefig("cr_trichome.pdf")
